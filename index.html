@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Attendance System</title>
+  <style>
+    :root {
+      --brand: rgb(222, 6, 6);
+      --brand-dark: rgb(190,5,5);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Mobile-first navbar */
+    nav {
+      background-color: var(--brand);
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      font-size: 18px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .menu {
+      display: none; /* hidden by default on mobile */
+      flex-direction: column;
+      background-color: var(--brand);
+      width: 100%;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      display: block;
+    }
+
+    .menu a:hover {
+      background-color: var(--brand-dark);
+    }
+
+    /* When menu has class "open" show it (mobile) */
+    .menu.open {
+      display: flex;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    p {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    /* Desktop view */
+    @media (min-width: 600px) {
+      nav {
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .brand {
+        margin-right: auto;
+        display: none; /* hide brand on wide screens (optional) */
+      }
+
+      .menu-btn {
+        display: none;
+      }
+
+      .menu {
+        display: flex !important;
+        flex-direction: row;
+        width: auto;
+        background: none;
+      }
+
+      .menu a {
+        border: none;
+        padding: 10px 15px;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="brand" href="index.html">Attendance System</a>
+    <button class="menu-btn" id="menuBtn" aria-controls="menu" aria-expanded="false">☰</button>
+    <div class="menu" id="menu">
+      <a href="index.html">Home</a>
+      <a href="attendance.html">Attendance List</a>
+      <a href="add-student.html">Add Student</a>
+      <a href="reports.html">Reports</a>
+      <a href="#logout">Logout</a>
+    </div>
+  </nav>
+
+  <h2>Welcome to the Attendance System</h2>
+  <p>Use the navigation bar above to go to Attendance List or Add Student pages.</p>
+
+  <script>
+    (function () {
+      const menu = document.getElementById('menu');
+      const btn = document.getElementById('menuBtn');
+
+      function toggleMenu() {
+        const open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+      }
+
+      // Toggle on button click
+      btn.addEventListener('click', toggleMenu);
+
+      // Close mobile menu when a link is clicked (so navigation works cleanly)
+      menu.addEventListener('click', function (e) {
+        // if a link was clicked
+        if (e.target.tagName === 'A') {
+          // remove the open class so the menu closes on mobile
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          // link will navigate normally
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

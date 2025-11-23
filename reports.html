@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --brand: rgb(222, 6, 6);
+      --brand-dark: rgb(190,5,5);
+    }
+
+    body { margin: 0; font-family: Arial, sans-serif; }
+
+    nav {
+      background-color: var(--brand);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand { font-weight: bold; color: white; text-decoration: none; }
+
+    .menu-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .menu {
+      display: none;
+      flex-direction: column;
+      background-color: var(--brand);
+      width: 100%;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      display: block;
+    }
+
+    .menu a:hover { background-color: var(--brand-dark); }
+    .menu.open { display: flex; }
+
+    h2 { text-align: center; margin-top: 20px; }
+
+    .summary {
+      width: 90%;
+      margin: 20px auto;
+      background: #fafafa;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .summary h3 { color: var(--brand); margin-bottom: 10px; }
+
+    @media (min-width: 600px) {
+      nav { justify-content: center; gap: 30px; }
+      .brand { display: none; }
+      .menu-btn { display: none; }
+      .menu { display: flex !important; flex-direction: row; width: auto; background: none; }
+      .menu a { border: none; padding: 10px 15px; }
+      .summary { width: 70%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="brand" href="index.html">Attendance System</a>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="menu" id="menu">
+      <a href="index.html">Home</a>
+      <a href="attendance.html">Attendance List</a>
+      <a href="add-student.html">Add Student</a>
+      <a href="reports.html">Reports</a>
+      <a href="#logout">Logout</a>
+    </div>
+  </nav>
+
+  <h2>Attendance Summary Report</h2>
+
+  <div class="summary">
+    <h3>Overview</h3>
+
+    <p>Total Students: <strong id="totalStudents">0</strong></p>
+    <p>Total Sessions: <strong id="totalSessions">6</strong></p>
+    <p>Total Presences: <strong id="totalPresences">0</strong></p>
+    <p>Total Participations: <strong id="totalParticipation">0</strong></p>
+    
+    <h3>Chart</h3>
+    <canvas id="reportChart" style="max-height:300px;"></canvas>
+  </div>
+
+  <script>
+    // MENU TOGGLE
+    const menu = document.getElementById('menu');
+    const btn = document.getElementById('menuBtn');
+    btn.addEventListener('click', () => menu.classList.toggle('open'));
+    menu.addEventListener('click', e => {
+      if (e.target.tagName === 'A') menu.classList.remove('open');
+    });
+
+    // =============== REAL REPORT BASED ON ATTENDANCE ===============
+
+    // Get students stored from Add Student page
+    const stored = JSON.parse(localStorage.getItem('students') || "[]");
+
+    // Base rows (the 3 default students from attendance.html)
+    const defaultStudentsCount = 3;
+
+    // Total students = default ones + added ones
+    const totalStudents = defaultStudentsCount + stored.length;
+
+    // We need to compute total presences + total participation.
+    // But reports.html does NOT have the table.
+    // So we ALSO store the attendance data into localStorage from attendance page.
+    // To support your existing system without breaking it:
+    // Your attendance.html already calculates attendance dynamically.
+    // We fetch "attendanceData" if it exists.
+
+    let attendanceData = JSON.parse(localStorage.getItem("attendanceData") || "null");
+
+    // If attendanceData doesn't exist yet, create a simple placeholder:
+    if (!attendanceData) {
+      attendanceData = {
+        totalPresences: 0,
+        totalParticipation: 0
+      };
+    }
+
+    // Update the UI
+    document.getElementById("totalStudents").textContent = totalStudents;
+    document.getElementById("totalPresences").textContent = attendanceData.totalPresences;
+    document.getElementById("totalParticipation").textContent = attendanceData.totalParticipation;
+
+    // Create chart
+    const ctx = document.getElementById("reportChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Students", "Presences", "Participation"],
+        datasets: [{
+          label: "Summary",
+          data: [totalStudents, attendanceData.totalPresences, attendanceData.totalParticipation],
+          backgroundColor: ["#0984e3", "#00b894", "#fdcb6e"]
+        }]
+      },
+      options: { responsive: true }
+    });
+  </script>
+
+</body>
+</html>

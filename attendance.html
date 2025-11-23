@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance List</title>
+
+  <!-- jQuery for EXO 5 & 6 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    :root {
+      --brand: rgb(222, 6, 6);
+      --brand-dark: rgb(190,5,5);
+      --green: #d1f7c4;
+      --yellow: #fff7b3;
+      --red: #ffc4c4;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    nav {
+      background-color: var(--brand);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .menu {
+      display: none;
+      flex-direction: column;
+      background-color: var(--brand);
+      width: 100%;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      display: block;
+    }
+
+    .menu a:hover {
+      background-color: var(--brand-dark);
+    }
+
+    .menu.open {
+      display: flex;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.4rem;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 95%;
+      margin: 15px auto;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1.5px solid var(--brand);
+      padding: 6px;
+      text-align: center;
+    }
+
+    th {
+      background-color: rgba(222,6,6,0.1);
+    }
+
+    tr.green { background-color: var(--green); }
+    tr.yellow { background-color: var(--yellow); }
+    tr.red { background-color: var(--red); }
+
+    @media (min-width: 600px) {
+      nav { justify-content: center; gap: 30px; }
+      .brand { display: none; }
+      .menu-btn { display: none; }
+      .menu { display: flex !important; flex-direction: row; width: auto; background: none; }
+      .menu a { border: none; padding: 10px 15px; }
+      table { width: 80%; font-size: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a class="brand" href="index.html">Attendance System</a>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="menu" id="menu">
+      <a href="index.html">Home</a>
+      <a href="attendance.html">Attendance List</a>
+      <a href="add-student.html">Add Student</a>
+      <a href="reports.html">Reports</a>
+      <a href="#logout">Logout</a>
+    </div>
+  </nav>
+
+  <h2>Attendance Table</h2>
+
+  <table id="attendanceTable">
+    <thead>
+      <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>S1</th>
+        <th>S2</th>
+        <th>S3</th>
+        <th>S4</th>
+        <th>S5</th>
+        <th>S6</th>
+        <th>P1</th>
+        <th>P2</th>
+        <th>P3</th>
+        <th>P4</th>
+        <th>P5</th>
+        <th>P6</th>
+        <th>Absences</th>
+        <th>Participation</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Boulouaret</td><td>Yasmine</td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td class="absences">0</td>
+        <td class="participations">0</td>
+        <td class="message"></td>
+      </tr>
+
+      <tr>
+        <td>Amina</td><td>Ali</td>
+        <td><input type="checkbox" class="session" checked></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session" checked></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td class="absences">0</td>
+        <td class="participations">0</td>
+        <td class="message"></td>
+      </tr>
+
+      <tr>
+        <td>Houcine</td><td>Rania</td>
+        <td><input type="checkbox" class="session" checked></td>
+        <td><input type="checkbox" class="session" checked></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="session"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td><input type="checkbox" class="participation"></td>
+        <td class="absences">0</td>
+        <td class="participations">0</td>
+        <td class="message"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    const menu = document.getElementById('menu');
+    const btn = document.getElementById('menuBtn');
+    btn.addEventListener('click', () => menu.classList.toggle('open'));
+    menu.addEventListener('click', e => {
+      if (e.target.tagName === 'A') menu.classList.remove('open');
+    });
+
+    const table = document.getElementById('attendanceTable');
+
+    function updateAttendance() {
+      const rows = table.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const checkboxes = row.querySelectorAll('.session');
+        let presentCount = 0;
+
+        checkboxes.forEach(cb => {
+          if (cb.checked) presentCount++;
+        });
+
+        const absences = 6 - presentCount;
+
+        let participationCount = 0;
+        row.querySelectorAll('.participation').forEach(cb => { if (cb.checked) participationCount++; });
+
+        row.querySelector('.absences').textContent = absences;
+        row.querySelector('.participations').textContent = participationCount;
+
+        row.classList.remove('green', 'yellow', 'red');
+
+        if (absences < 3) {
+          row.classList.add('green');
+          row.querySelector('.message').textContent =
+            "Good attendance – Excellent participation";
+        } 
+        else if (absences >= 3 && absences <= 4) {
+          row.classList.add('yellow');
+          row.querySelector('.message').textContent =
+            "Warning – attendance low – You need to participate more";
+        } 
+        else {
+          row.classList.add('red');
+          row.querySelector('.message').textContent =
+            "Excluded – too many absences – You need to participate more";
+        }
+      });
+    }
+
+    updateAttendance();
+    table.addEventListener('change', updateAttendance);
+    function saveReportNumbers() {
+    const rows = document.querySelectorAll('#attendanceTable tbody tr');
+
+    let totalPres = 0;
+    let totalPart = 0;
+
+    rows.forEach(row => {
+      row.querySelectorAll('.session').forEach(cb => { if (cb.checked) totalPres++; });
+      row.querySelectorAll('.participation').forEach(cb => { if (cb.checked) totalPart++; });
+    });
+
+    const data = {
+      totalPresences: totalPres,
+      totalParticipation: totalPart
+    };
+
+    localStorage.setItem("attendanceData", JSON.stringify(data));
+  }
+
+  // Save whenever attendance updates
+  table.addEventListener('change', () => {
+    updateAttendance();
+    saveReportNumbers();
+  });
+
+  // Save at page load (initial state)
+  saveReportNumbers();
+  </script>
+
+  <!-- =================== EXERCISE 4 — REPORT =================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <div style="width:90%; max-width:800px; margin:12px auto; text-align:center;">
+    <button id="showReport" style="background:var(--brand); color:white; padding:8px 12px; border:none; border-radius:6px; cursor:pointer;">
+      Show Report
+    </button>
+  </div>
+
+  <section id="reportSection" style="display:none; width:90%; max-width:800px; margin:6px auto;">
+    <div id="reportSummary" style="text-align:center; margin-bottom:8px;"></div>
+    <div style="height:180px;">
+      <canvas id="reportChart" style="height:100%; width:100%;"></canvas>
+    </div>
+  </section>
+
+  <script>
+    function computeReport() {
+      const rows = table.querySelectorAll('tbody tr');
+      const totalStudents = rows.length;
+      let totalPresentChecks = 0;
+      let totalParticipationChecks = 0;
+
+      rows.forEach(row => {
+        row.querySelectorAll('.session').forEach(cb => { if (cb.checked) totalPresentChecks++; });
+        row.querySelectorAll('.participation').forEach(cb => { if (cb.checked) totalParticipationChecks++; });
+      });
+
+      return { totalStudents, totalPresentChecks, totalParticipationChecks };
+    }
+
+    let reportChart = null;
+    document.getElementById('showReport').addEventListener('click', () => {
+      const data = computeReport();
+      document.getElementById('reportSection').style.display = 'block';
+      document.getElementById('reportSummary').innerHTML =
+        `<strong>Total students:</strong> ${data.totalStudents} — <strong>Total presences:</strong> ${data.totalPresentChecks} — <strong>Total participations:</strong> ${data.totalParticipationChecks}`;
+
+      const ctx = document.getElementById('reportChart').getContext('2d');
+      if (reportChart) reportChart.destroy();
+      reportChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Students','Presences','Participations'],
+          datasets: [{
+            label: 'Report',
+            data: [data.totalStudents, data.totalPresentChecks, data.totalParticipationChecks],
+            backgroundColor: ['#6c5ce7','#00b894','#fdcb6e']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+    });
+  </script>
+
+  <!-- =================== EXERCISE 3 — LOAD NEW STUDENTS =================== -->
+
+  <script>
+    function loadStoredStudents() {
+      const stored = localStorage.getItem('students');
+      if (!stored) return;
+      try {
+        const students = JSON.parse(stored);
+        const tbody = table.querySelector('tbody');
+        students.forEach(s => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${s.lastName}</td><td>${s.firstName}</td>
+            ${'<td><input type="checkbox" class="session"></td>'.repeat(6)}
+            ${'<td><input type="checkbox" class="participation"></td>'.repeat(6)}
+            <td class="absences">0</td>
+            <td class="participations">0</td>
+            <td class="message"></td>
+          `;
+          tbody.appendChild(tr);
+        });
+        updateAttendance();
+      } catch (err) { console.error('Failed to parse stored students', err); }
+    }
+
+    loadStoredStudents();
+  </script>
+
+  <!-- =================== EXERCISE 5 — jQuery Hover + Click =================== -->
+
+  <script>
+    $(document).ready(function () {
+
+      $(document).on('mouseenter', '#attendanceTable tbody tr', function () {
+        $(this).css('outline', '3px solid rgba(255,230,150,0.7)');
+      });
+
+      $(document).on('mouseleave', '#attendanceTable tbody tr', function () {
+        $(this).css('outline', '');
+      });
+
+      $(document).on('click', '#attendanceTable tbody td', function () {
+        const td = $(this);
+        const idx = td.index();
+
+        if (idx === 0 || idx === 1) {
+          const row = td.closest('tr');
+          const last = row.find('td').eq(0).text();
+          const first = row.find('td').eq(1).text();
+          const abs = row.find('.absences').text();
+          alert(`Student: ${first} ${last}\nAbsences: ${abs}`);
+        }
+      });
+
+    });
+  </script>
+
+  <!-- =================== EXERCISE 6 — Highlight Excellent Students =================== -->
+
+<script>
+  $(document).ready(function () {
+
+    // Highlight Excellent Students
+    $("#highlightExcellent").click(function () {
+      $("#attendanceTable tbody tr").each(function () {
+        const abs = parseInt($(this).find(".absences").text());
+
+        if (abs < 3) {
+          // Soft animation + persistent highlight color
+          $(this)
+            .stop()
+            .animate({ opacity: 0.5 }, 150)
+            .animate({ opacity: 1 }, 150)
+            .css("background-color", "#a8f5a2"); // persistent green highlight
+        }
+      });
+    });
+
+    // Reset Colors
+    $("#resetColors").click(function () {
+
+      // Remove highlight color
+      $("#attendanceTable tbody tr").css("background-color", "");
+
+      // Reapply original red/yellow/green logic
+      updateAttendance();
+    });
+
+  });
+</script>
+
+
+  <!-- EXERCISE 6 BUTTONS -->
+  <div style="width:90%; max-width:800px; margin:20px auto; text-align:center;">
+    <button id="highlightExcellent"
+      style="background:var(--brand); color:white; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; margin-right:5px;">
+      Highlight Excellent Students
+    </button>
+
+    <button id="resetColors"
+      style="background:gray; color:white; padding:8px 12px; border:none; border-radius:6px; cursor:pointer;">
+      Reset Colors
+    </button>
+  </div>
+
+</body>
+</html>

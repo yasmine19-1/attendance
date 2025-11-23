@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Student</title>
+  <style>
+    :root {
+      --brand: rgb(222, 6, 6);
+      --brand-dark: rgb(190,5,5);
+    }
+
+    body { margin: 0; font-family: Arial, sans-serif; }
+
+    nav {
+      background-color: var(--brand);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand { font-weight: bold; color: white; text-decoration: none; }
+    .menu-btn {
+      font-size: 24px; background: none; border: none;
+      color: white; cursor: pointer; padding: 6px;
+    }
+    .menu { display: none; flex-direction: column; background-color: var(--brand); width: 100%; }
+    .menu a {
+      color: white; text-decoration: none; padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.12); display: block;
+    }
+    .menu a:hover { background-color: var(--brand-dark); }
+    .menu.open { display: flex; }
+
+    h2 { text-align: center; margin-top: 20px; }
+
+    form {
+      width: 90%; margin: 15px auto; background-color: #fafafa;
+      padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input[type="text"], input[type="email"], input[type="number"] {
+      width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;
+    }
+    input[type="submit"] {
+      background-color: var(--brand); color: white; border: none;
+      padding: 10px 15px; cursor: pointer; border-radius: 4px; width: 100%;
+      font-weight: bold; margin-top: 10px;
+    }
+    input[type="submit"]:hover { background-color: var(--brand-dark); }
+
+    .error {
+      color: var(--brand);
+      font-size: 0.9em;
+      margin-top: -5px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    @media (min-width: 600px) {
+      nav { justify-content: center; gap: 30px; }
+      .brand { display: none; }
+      .menu-btn { display: none; }
+      .menu {
+        display: flex !important; flex-direction: row;
+        width: auto; background: none;
+      }
+      .menu a { border: none; padding: 10px 15px; }
+      form { width: 50%; padding: 25px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a class="brand" href="index.html">Attendance System</a>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="menu" id="menu">
+      <a href="index.html">Home</a>
+      <a href="attendance.html">Attendance List</a>
+      <a href="add-student.html">Add Student</a>
+      <a href="reports.html">Reports</a>
+      <a href="#logout">Logout</a>
+    </div>
+  </nav>
+
+  <h2>Add New Student</h2>
+
+  <form id="studentForm" novalidate>
+    <label for="studentID">Student ID:</label>
+    <input type="number" id="studentID" name="studentID" placeholder="Enter your ID">
+    <div class="error" id="idError">Please enter a valid numeric ID.</div>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
+    <div class="error" id="lastError">Last name should contain letters only.</div>
+
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+    <div class="error" id="firstError">First name should contain letters only.</div>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email">
+    <div class="error" id="emailError">Please enter a valid email address.</div>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="confirmMsg" style="width:90%; max-width:500px; margin:10px auto; text-align:center; display:none; color:green; font-weight:bold;"></div>
+
+  <script>
+    // NAV MENU
+    const menu = document.getElementById('menu');
+    const btn = document.getElementById('menuBtn');
+    btn.addEventListener('click', () => menu.classList.toggle('open'));
+    menu.addEventListener('click', e => {
+      if (e.target.tagName === 'A') menu.classList.remove('open');
+    });
+
+    // FORM VALIDATION
+    const form = document.getElementById('studentForm');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const idField = document.getElementById('studentID');
+      const lastField = document.getElementById('lastName');
+      const firstField = document.getElementById('firstName');
+      const emailField = document.getElementById('email');
+
+      const idError = document.getElementById('idError');
+      const lastError = document.getElementById('lastError');
+      const firstError = document.getElementById('firstError');
+      const emailError = document.getElementById('emailError');
+
+      let valid = true;
+
+      if (idField.value.trim() === '' || isNaN(idField.value)) {
+        idError.style.display = 'block';
+        valid = false;
+      } else idError.style.display = 'none';
+
+      if (!/^[A-Za-z]+$/.test(lastField.value.trim())) {
+        lastError.style.display = 'block';
+        valid = false;
+      } else lastError.style.display = 'none';
+
+      if (!/^[A-Za-z]+$/.test(firstField.value.trim())) {
+        firstError.style.display = 'block';
+        valid = false;
+      } else firstError.style.display = 'none';
+
+      if (!/^[\w.-]+@[\w.-]+\.\w{2,}$/.test(emailField.value.trim())) {
+        emailError.style.display = 'block';
+        valid = false;
+      } else emailError.style.display = 'none';
+
+      if (valid) {
+        // save student to localStorage so attendance page can load it
+        const student = {
+          id: idField.value.trim(),
+          lastName: lastField.value.trim(),
+          firstName: firstField.value.trim(),
+          email: emailField.value.trim()
+        };
+        const stored = localStorage.getItem('students');
+        let arr = [];
+        try { arr = stored ? JSON.parse(stored) : []; } catch (e) { arr = []; }
+        arr.push(student);
+        localStorage.setItem('students', JSON.stringify(arr));
+
+        document.getElementById('confirmMsg').textContent = 'Student added successfully!';
+        document.getElementById('confirmMsg').style.display = 'block';
+        setTimeout(() => { document.getElementById('confirmMsg').style.display = 'none'; }, 3000);
+        form.reset();
+      }
+    });
+  </script>
+
+</body>
+</html>

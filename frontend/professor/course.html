@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Sessions</title>
+
+  <style>
+    :root {
+      --brand: rgb(222,6,6);
+      --brand-dark: rgb(190,5,5);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+    }
+
+    nav {
+      background: var(--brand);
+      color: white;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-weight: bold;
+      font-size: 18px;
+      color: white;
+      text-decoration: none;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 25px;
+      color: #333;
+    }
+
+    .session-list {
+      width: 90%;
+      max-width: 600px;
+      margin: 25px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .session-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .session-item:hover {
+      background: #ffeaea;
+      border-color: var(--brand);
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-transform: capitalize;
+      color: white;
+    }
+
+    .open { background: #27ae60; }
+    .closed { background: #c0392b; }
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="brand">Attendance System</a>
+  </nav>
+
+  <h2 id="courseTitle">Course</h2>
+
+  <div class="session-list" id="sessionList">
+    <!-- Dynamic sessions -->
+  </div>
+
+  <script>
+    // Get course_id from URL
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get("course_id");
+
+    if (!courseId) {
+      document.getElementById("sessionList").innerHTML =
+        "<p style='text-align:center;color:red;'>course_id not provided.</p>";
+      throw new Error("course_id missing");
+    }
+
+    // Load sessions for this course
+    fetch(`../../backend/professor/list_course_sessions.php?course_id=${courseId}`)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("sessionList");
+
+        if (!data.success) {
+          container.innerHTML = "<p style='color:red;text-align:center;'>Failed to load sessions.</p>";
+          return;
+        }
+
+        if (data.sessions.length === 0) {
+          container.innerHTML = "<p style='text-align:center;'>No sessions found for this course.</p>";
+          return;
+        }
+
+        data.sessions.forEach(session => {
+          const div = document.createElement("div");
+          div.className = "session-item";
+
+          const dateText = session.date || "Unknown date";
+          const groupText = session.group_name ? `Group: ${session.group_name}` : "";
+
+          div.innerHTML = `
+            <span>${dateText} — ${groupText}</span>
+            <span class="badge ${session.status}">${session.status}</span>
+          `;
+
+          div.addEventListener("click", () => {
+            window.location.href = `session.html?session_id=${session.session_id}`;
+          });
+
+          container.appendChild(div);
+        });
+
+      })
+      .catch(err => {
+        document.getElementById("sessionList").innerHTML =
+          "<p style='color:red;text-align:center;'>Error loading sessions.</p>";
+      });
+
+  </script>
+
+</body>
+</html>

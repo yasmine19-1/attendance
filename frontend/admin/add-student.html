@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Student</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    form { width: 300px; margin: auto; }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+    }
+    button {
+      background: #de0606;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Add Student</h2>
+
+<form action="../../backend/add_student.php" method="POST">
+  <label>Full Name:</label>
+  <input type="text" name="fullname" required>
+
+  <label>Matricule:</label>
+  <input type="text" name="matricule" required>
+
+  <label>Group:</label>
+  <input type="number" name="group_id" required>
+
+  <button type="submit">Add Student</button>
+</form>
+
+</body>
+</html>

@@ -1,50 +1,36 @@
-<aside class="sidebar">
-  <h3>Professor Portal</h3>
-  <p class="muted">Welcome, Dr. Johnson</p>
+<?php
+if (!isset($_SESSION)) session_start();
+$profName = $_SESSION['professor_name'] ?? 'Professor';
+?>
 
-  <nav class="prof-nav">
-    <a href="index.php">Dashboard</a>
+<aside class="sidebar" id="sidebar">
+
+<!-- Close button (mobile only) -->
+<button class="close-btn" id="closeSidebar">✕</button>
+
+<div class="sidebar-header">
+    <div class="portal-title">Professor Portal</div>
+    <div class="portal-subtitle">Welcome, <?= htmlspecialchars($profName) ?></div>
+</div>
+
+<nav class="nav-menu">
+
+    <a href="index.php"
+       class="<?= basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : '' ?>">
+        Dashboard
+    </a>
+
+    <a href="courses.php"
+       class="<?= basename($_SERVER['PHP_SELF']) === 'courses.php' ? 'active' : '' ?>">
+        My Courses
+    </a>
+
+    <a href="profile.php"
+       class="<?= basename($_SERVER['PHP_SELF']) === 'profile.php' ? 'active' : '' ?>">
+        Profile
+    </a>
+
     <a href="../../backend/logout.php" class="logout">Logout</a>
+</nav>
 
-  </nav>
 </aside>
-
-<style>
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 100vh;
-  padding: 28px 20px;
-  background: #ffffff;
-  box-shadow: 1px 0 0 #eee;
-  box-sizing: border-box;
-  z-index: 10;
-}
-
-.sidebar h3 {
-  margin: 0 0 6px 0;
-  font-size: 18px;
-}
-
-.sidebar .muted {
-  margin: 0 0 18px 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.prof-nav a {
-  display: block;
-  padding: 10px 0;
-  color: #0b5cff;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.prof-nav a.logout {
-  color: #d00;
-  margin-top: 18px;
-}
-</style>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Take Attendance</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .btn { padding: 10px 20px; background: #4CAF50; color: white; cursor: pointer; }
+    </style>
+</head>
+
+<body>
+
+<h2>Take Attendance</h2>
+
+<p><strong>Session ID:</strong> <span id="sessionId"></span></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Matricule</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="students-table"></tbody>
+</table>
+
+<br>
+<button class="btn" onclick="saveAttendance()">Save Attendance</button>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+
+    document.getElementById("sessionId").textContent = sessionId;
+
+    // Load students of this session
+    fetch(`../../backend/attendance/get_students.php?session_id=${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) return alert("Error loading students");
+
+            const tbody = document.getElementById("students-table");
+            data.students.forEach(st => {
+                const row = `
+                    <tr>
+                        <td>${st.fullname}</td>
+                        <td>${st.matricule}</td>
+                        <td>
+                            <select id="att_${st.id}">
+                                <option value="present">Present</option>
+                                <option value="absent">Absent</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        });
+
+    function saveAttendance() {
+        let attendanceData = [];
+
+        document.querySelectorAll("select[id^='att_']").forEach(select => {
+            let studentId = select.id.replace("att_", "");
+            let status = select.value;
+
+            attendanceData.push({
+                student_id: studentId,
+                status: status
+            });
+        });
+
+        fetch("../../backend/attendance/save_attendance.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                session_id: sessionId,
+                records: attendanceData
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Attendance saved!");
+                window.location.href = "session.html?course_id=" + urlParams.get("course_id");
+            } else {
+                alert("Error: " + data.error);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
